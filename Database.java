@@ -17,9 +17,11 @@ public class Database {
 
     public static void createCompanyTable() throws SQLException, ClassNotFoundException {
         Connection connection = Database.getConnection();
-        String sql = "CREATE TABLE IF NOT EXISTS COMPANY (ID INT, NAME VARCHAR);";
+        String sql = "CREATE TABLE IF NOT EXISTS COMPANY (ID INTEGER auto_increment PRIMARY KEY, " +
+                "NAME VARCHAR UNIQUE NOT NULL);";
         Statement statement = connection.createStatement();
         statement.executeUpdate(sql);
+        connection.close();
     }
 
     public static void dropCompanyTable() throws SQLException, ClassNotFoundException {
@@ -27,5 +29,6 @@ public class Database {
         String sql = "DROP TABLE IF EXISTS COMPANY";
         Statement statement = connection.createStatement();
         statement.executeUpdate(sql);
+        connection.close();
     }
 }
