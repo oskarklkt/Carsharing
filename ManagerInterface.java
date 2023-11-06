@@ -4,12 +4,13 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
-public class ManagerInterface {
+public abstract class ManagerInterface {
     public static void start() throws SQLException, ClassNotFoundException {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("1. Company list\n" +
-                "2. Create a company\n" +
-                "0. Back");
+        System.out.println("""
+                1. Company list
+                2. Create a company
+                0. Back""");
         CompanyDAOImpl companyDAO = new CompanyDAOImpl();
 
         int option = scanner.nextInt();
@@ -19,9 +20,16 @@ public class ManagerInterface {
             case 1 -> {
                 List<Company> companyList = companyDAO.getAll();
                 if (!companyList.isEmpty()) {
-                    System.out.println("Company list:");
+                    System.out.println("Choose a company:");
                     companyDAO.getAll().forEach(Company::toString);
-                    ManagerInterface.start();
+                    System.out.println("0. Back");
+                    int companyNumber = scanner.nextInt();
+                    if (companyNumber == 0) {
+                        ManagerInterface.start();
+                    } else {
+                        CompanyInterface.start(companyNumber);
+                    }
+
                 } else {
                     System.out.println("The company list is empty!");
                     System.out.println();

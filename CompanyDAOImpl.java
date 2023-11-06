@@ -94,7 +94,9 @@ public class CompanyDAOImpl implements CompanyDAO {
     }
 
     //This method returns id that should be applied
-    public int getId() throws SQLException, ClassNotFoundException{
+    public int getId() throws SQLException, ClassNotFoundException {
         return getAll().size() + 1;
     }
+
+
 }

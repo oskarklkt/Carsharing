@@ -7,8 +7,8 @@ import java.sql.Statement;
 public class Main {
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        Database.dropCompanyTable();
-        Database.createCompanyTable();
+        Database.dropTables();
+        Database.createTables();
         Connection connection = Database.getConnection();
         Statement statement = connection.createStatement();
         Menu.start();

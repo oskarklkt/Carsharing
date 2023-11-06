@@ -3,7 +3,7 @@ package carsharing;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class Menu {
+public abstract class Menu {
 
     public static void start() throws SQLException, ClassNotFoundException {
         Scanner scanner = new Scanner(System.in);
