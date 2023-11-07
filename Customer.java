@@ -5,7 +5,7 @@ public class Customer {
     private String name;
     private int rented_car_id;
 
-    public Customer(int id, String name, int rented_car_id) {
+    public Customer(int id, String name, Integer rented_car_id) {
         this.id = id;
         this.name = name;
         this.rented_car_id = rented_car_id;
@@ -33,5 +33,12 @@ public class Customer {
 
     public void setRented_car_id(int rented_car_id) {
         this.rented_car_id = rented_car_id;
+    }
+
+    @Override
+    public String toString() {
+        System.out.print(id + '.' + " ");
+        System.out.println(name);
+        return "";
     }
 }
