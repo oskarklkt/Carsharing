@@ -52,15 +52,40 @@ public class Database {
         connection.close();
     }
 
+    public static void createCustomerTable() throws SQLException, ClassNotFoundException {
+        Connection connection = Database.getConnection();
+        String sql =    "CREATE TABLE IF NOT EXISTS CUSTOMER " +
+                        "(ID INTEGER auto_increment PRIMARY KEY, " +
+                        "NAME VARCHAR UNIQUE NOT NULL," +
+                        "RENTED_CAR_ID INT NOT NULL," +
+                        "FOREIGN KEY (RENTED_CAR_ID) REFERENCES CAR(ID)" +
+                        ");";
+        Statement statement = connection.createStatement();
+        statement.executeUpdate(sql);
+        connection.close();
+    }
+
+    public static void dropCustomerTable() throws SQLException, ClassNotFoundException {
+        Connection connection = Database.getConnection();
+        String sql =    "DROP TABLE IF EXISTS CUSTOMER";
+        Statement statement = connection.createStatement();
+        statement.executeUpdate(sql);
+        connection.close();
+    }
+
+
+
     public static void createTables() throws SQLException, ClassNotFoundException {
 
         createCompanyTable();
         createCarTable();
+        createCustomerTable();
     }
 
     public static void dropTables() throws SQLException, ClassNotFoundException {
         dropCarTable();
         dropCompanyTable();
+        dropCarTable();
     }
 
 
