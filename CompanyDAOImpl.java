@@ -98,5 +98,28 @@ public class CompanyDAOImpl implements CompanyDAO {
         return getAll().size() + 1;
     }
 
+    @Override
+    public List<Car> getAllCarsOfCompany(int companyId) throws SQLException, ClassNotFoundException {
+        Connection connection = Database.getConnection();
+        List<Car> carList = new ArrayList<>();
+
+        String sql =    "SELECT *" +
+                        "FROM CAR" +
+                        "JOIN COMPANY ON COMPANY.ID = CAR.COMPANY_ID" +
+                        "WHERE COMPANY_ID = ?";
+
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setInt(1, companyId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            int id = resultSet.getInt("ID");
+            String name = resultSet.getString("NAME");
+            int compId = resultSet.getInt("COMPANY_ID");
+            carList.add(new Car(id, name, companyId));
+        }
+        return carList;
+    }
+
 
 }

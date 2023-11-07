@@ -57,7 +57,7 @@ public class Database {
         String sql =    "CREATE TABLE IF NOT EXISTS CUSTOMER " +
                         "(ID INTEGER auto_increment PRIMARY KEY, " +
                         "NAME VARCHAR UNIQUE NOT NULL," +
-                        "RENTED_CAR_ID INT NOT NULL," +
+                        "RENTED_CAR_ID INT," +
                         "FOREIGN KEY (RENTED_CAR_ID) REFERENCES CAR(ID)" +
                         ");";
         Statement statement = connection.createStatement();

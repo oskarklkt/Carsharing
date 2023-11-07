@@ -3,7 +3,7 @@ package carsharing;
 public class Customer {
     private int id;
     private String name;
-    private int rented_car_id;
+    private Integer rented_car_id;
 
     public Customer(int id, String name, Integer rented_car_id) {
         this.id = id;
@@ -27,7 +27,7 @@ public class Customer {
         this.name = name;
     }
 
-    public int getRented_car_id() {
+    public Integer getRented_car_id() {
         return rented_car_id;
     }
 

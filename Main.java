@@ -7,7 +7,6 @@ import java.sql.Statement;
 public class Main {
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        Database.dropTables();
         Database.createTables();
         Connection connection = Database.getConnection();
         Statement statement = connection.createStatement();

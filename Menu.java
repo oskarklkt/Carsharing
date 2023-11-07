@@ -34,8 +34,12 @@ public abstract class Menu {
                     Menu.start();
                 } else {
                     System.out.println("Choose a customer:");
-                    customerList.stream()
-                            .forEach(Customer::toString);
+                    int counter = 1;
+                    for (Customer customer : customerList) {
+                        System.out.println(counter + ". " + customer.getName());
+                        counter++;
+                    }
+                    counter = 1;
                     int customerId = scanner.nextInt();
                     CustomerInterface.start(customerId);
                 }

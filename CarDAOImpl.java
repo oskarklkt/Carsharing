@@ -84,7 +84,12 @@ public class CarDAOImpl implements CarDAO {
 
     @Override
     public int delete(Car car) throws SQLException, ClassNotFoundException {
-        return 0;
+        Connection connection = Database.getConnection();
+
+        String sql = "DELETE FROM CAR WHERE NAME = /'?/'";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1, car.getName());
+        return preparedStatement.executeUpdate();
     }
 
     @Override
