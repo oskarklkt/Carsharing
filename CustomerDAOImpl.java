@@ -85,9 +85,20 @@ public class CustomerDAOImpl implements CustomerDAO {
     public int delete(Customer customer) throws SQLException, ClassNotFoundException {
         Connection connection = Database.getConnection();
 
-        String sql = "DELETE FROM CUSTOMER WHERE NAME = /'?/'";
+        String sql = "DELETE FROM CUSTOMER WHERE ID = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1, customer.getName());
+        preparedStatement.setInt(1, customer.getId());
+        return preparedStatement.executeUpdate();
+    }
+
+
+    @Override
+    public int delete(int customerId) throws SQLException, ClassNotFoundException {
+        Connection connection = Database.getConnection();
+
+        String sql = "DELETE FROM CUSTOMER WHERE ID = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setInt(1, customerId);
         return preparedStatement.executeUpdate();
     }
 
@@ -101,7 +112,9 @@ public class CustomerDAOImpl implements CustomerDAO {
         Scanner scanner = new Scanner(System.in);
         Customer customer = getAll().get(customerId - 1);
         CompanyDAOImpl companyDAOImpl = new CompanyDAOImpl();
-        if (customer.getRented_car_id() != null) {
+        CarDAOImpl carDAOImpl = new CarDAOImpl();
+
+        if (!(getRentedCarId(customerId) == 0)) {
             System.out.println("You've already rented a car!");
             CustomerInterface.start(customerId);
         } else if (companyDAOImpl.getAll().isEmpty()) {
@@ -111,21 +124,34 @@ public class CustomerDAOImpl implements CustomerDAO {
         } else {
             System.out.println("Choose a company:");
             companyDAOImpl.getAll().stream().forEach(Company::toString);
+            System.out.println("0. Back");
             int companyId = scanner.nextInt();
+            if (companyId == 0) {
+                CustomerInterface.start(customerId);
+            }
             List<Car> allCarsOfCompany = companyDAOImpl.getAllCarsOfCompany(companyId);
+            for (Car car : allCarsOfCompany) {
+                if (carDAOImpl.isCarRented(car.getId())) {
+                    allCarsOfCompany.remove(car);
+                }
+            }
             System.out.println("Choose a car:");
             int counter = 1;
             for (Car car : allCarsOfCompany) {
                 System.out.println(counter + ". " + car.getName());
                 counter++;
             }
+            System.out.println("0. Back");
             counter = 1;
             int chosenCar = scanner.nextInt();
+            if (chosenCar == 0) {
+                CustomerInterface.start(customerId);
+            }
             System.out.println();
             System.out.println("You rented " + "'" + allCarsOfCompany.get(chosenCar - 1).getName() + "'");
             System.out.println();
-            CarDAOImpl carDAOImpl = new CarDAOImpl();
-            carDAOImpl.delete(allCarsOfCompany.get(chosenCar - 1));
+            Car car = allCarsOfCompany.get(chosenCar - 1);
+            setRentCarId(customerId, car.getId());
             CustomerInterface.start(customerId);
         }
     }
@@ -148,7 +174,7 @@ public class CustomerDAOImpl implements CustomerDAO {
             String name = resultSet.getString("NAME");
             int compId = resultSet.getInt("COMPANY_ID");
 
-            carDAOImpl.insert(new Car(id, name, compId));
+            //carDAOImpl.insert(new Car(carDAOImpl.getId(), name, compId));
         } else {
             System.out.println("You didn't rent a car!");
             System.out.println();
@@ -156,10 +182,12 @@ public class CustomerDAOImpl implements CustomerDAO {
         }
 
         Customer customer = get(customerId);
-        delete(customer);
+        delete(customerId);
         insert(new Customer(customerId, customer.getName(), null));
+        System.out.println("You've returned a rented car!");
         connection.close();
         preparedStatement.close();
+        CustomerInterface.start(customerId);
     }
 
     @Override
@@ -189,7 +217,45 @@ public class CustomerDAOImpl implements CustomerDAO {
             System.out.println(carName);
             System.out.println("Company:");
             System.out.println(companyName);
+            System.out.println();
+            CustomerInterface.start(customerId);
         }
     }
+
+    @Override
+    public Integer getRentedCarId(int customerId) throws SQLException, ClassNotFoundException {
+        Connection connection = Database.getConnection();
+
+        String sql = "SELECT RENTED_CAR_ID FROM CUSTOMER WHERE ID = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setInt(1, customerId);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+        Integer result = null;
+
+        while (resultSet.next()) {
+            result = resultSet.getInt(1);
+            if (result.toString().equals("'NULL'")) {
+                result = 0;
+            }
+        }
+        return result;
+    }
+
+
+    @Override
+    public void setRentCarId(int id, int carId) throws SQLException, ClassNotFoundException {
+        Connection connection = Database.getConnection();
+
+        String sql = "UPDATE CUSTOMER SET RENTED_CAR_ID = ? WHERE ID = ?";
+
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setInt(1, carId);
+        preparedStatement.setInt(2, id);
+        preparedStatement.executeUpdate();
+        connection.close();
+    }
+
+
 
 }

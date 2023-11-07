@@ -64,12 +64,11 @@ public class CarDAOImpl implements CarDAO {
     public int insert(Car car) throws SQLException, ClassNotFoundException {
         Connection connection = Database.getConnection();
 
-        String sql = "INSERT INTO CAR (ID, NAME, COMPANY_ID) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO CAR (NAME, COMPANY_ID) VALUES (?, ?)";
 
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setInt(1, car.getId());
-        preparedStatement.setString(2, car.getName());
-        preparedStatement.setInt(3, car.getCompany_id());
+        preparedStatement.setString(1, car.getName());
+        preparedStatement.setInt(2, car.getCompany_id());
 
         int result = preparedStatement.executeUpdate();
         connection.close();
@@ -86,7 +85,7 @@ public class CarDAOImpl implements CarDAO {
     public int delete(Car car) throws SQLException, ClassNotFoundException {
         Connection connection = Database.getConnection();
 
-        String sql = "DELETE FROM CAR WHERE NAME = /'?/'";
+        String sql = "DELETE FROM CAR WHERE NAME = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, car.getName());
         return preparedStatement.executeUpdate();
@@ -106,6 +105,38 @@ public class CarDAOImpl implements CarDAO {
             }
         }
         return companyCars;
+    }
+
+    @Override
+    public int getCarIdByName (String name) throws SQLException, ClassNotFoundException {
+        Connection connection = Database.getConnection();
+        int id = 0;
+
+        String sql = "SELECT ID FROM CAR WHERE NAME = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1, name);
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            id = resultSet.getInt(1);
+        }
+        return id;
+    }
+
+    @Override
+    public boolean isCarRented(int carID) throws SQLException, ClassNotFoundException {
+        Connection connection = Database.getConnection();
+        boolean result = false;
+
+        String sql = "SELECT * FROM CUSTOMER JOIN CAR ON CAR.ID = CUSTOMER.RENTED_CAR_ID WHERE RENTED_CAR_ID = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setInt(1, carID);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        if (resultSet.next()) {
+            result = true;
+        }
+        return result;
     }
 
 }

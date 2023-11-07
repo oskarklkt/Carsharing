@@ -103,9 +103,9 @@ public class CompanyDAOImpl implements CompanyDAO {
         Connection connection = Database.getConnection();
         List<Car> carList = new ArrayList<>();
 
-        String sql =    "SELECT *" +
-                        "FROM CAR" +
-                        "JOIN COMPANY ON COMPANY.ID = CAR.COMPANY_ID" +
+        String sql =    "SELECT * " +
+                        "FROM CAR " +
+                        "JOIN COMPANY ON COMPANY.ID = CAR.COMPANY_ID " +
                         "WHERE COMPANY_ID = ?";
 
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
